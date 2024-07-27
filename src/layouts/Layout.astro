@@ -1,4 +1,22 @@
 ---
+import { getRole } from "../components/services/authService";
+import Logout from "../components/svelte/Logout.svelte";
+
+export async function load() {
+	const role = getRole();
+	if (!role) {
+		return {
+			redirect: "/login",
+		};
+	} else if (role === "administrador") {
+		window.location.href = "/administrador";
+	} else if (role === "mesero") {
+		window.location.href = "/mesero";
+	} else if (role === "cocina") {
+		window.location.href = "/cocina";
+	}
+}
+
 interface Props {
 	title: string;
 }
@@ -7,7 +25,7 @@ const { title } = Astro.props;
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="es">
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="description" content="Astro description" />
@@ -15,37 +33,180 @@ const { title } = Astro.props;
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<meta name="generator" content={Astro.generator} />
 		<title>{title}</title>
+		<script>
+			// Toggle dark mode
+			function toggleDarkMode() {
+				const html = document.documentElement;
+				if (html.classList.contains("dark")) {
+					html.classList.remove("dark");
+					localStorage.setItem("theme", "light");
+				} else {
+					html.classList.add("dark");
+					localStorage.setItem("theme", "dark");
+				}
+			}
+
+			// Set initial theme based on localStorage
+			function setInitialTheme() {
+				const theme = localStorage.getItem("theme");
+				if (theme === "dark") {
+					document.documentElement.classList.add("dark");
+				} else {
+					document.documentElement.classList.remove("dark");
+				}
+			}
+		</script>
 	</head>
-	<body>
-		<slot />
+	<body
+		onload="setInitialTheme()"
+		class="bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100"
+	>
+		<!-- Mobile Sidebar Toggle -->
+		<div
+			class="md:hidden flex justify-between items-center bg-blue-900 dark:bg-blue-800 text-white py-2 px-4"
+		>
+			<a href="#" class="text-white flex items-center space-x-2">
+				<svg
+					class="w-8 h-8"
+					xmlns="http://www.w3.org/2000/svg"
+					fill="none"
+					viewBox="0 0 24 24"
+					stroke="currentColor"
+				>
+					<path
+						stroke-linecap="round"
+						stroke-linejoin="round"
+						stroke-width="2"
+						d="M12 4v16m8-8H4"></path>
+				</svg>
+				<span class="text-2xl font-extrabold">Dashboard</span>
+			</a>
+			<button id="menu-btn" class="text-white focus:outline-none">
+				<svg
+					class="w-8 h-8"
+					xmlns="http://www.w3.org/2000/svg"
+					fill="none"
+					viewBox="0 0 24 24"
+					stroke="currentColor"
+				>
+					<path
+						stroke-linecap="round"
+						stroke-linejoin="round"
+						stroke-width="2"
+						d="M4 6h16M4 12h16m-7 6h7"></path>
+				</svg>
+			</button>
+		</div>
+
+		<!-- Mobile Sidebar -->
+		<div
+			id="sidebar"
+			class="bg-blue-900 dark:bg-blue-800 text-white w-64 space-y-6 py-7 px-2 absolute inset-y-0 left-0 transform -translate-x-full transition duration-200 md:hidden"
+		>
+			<a href="#" class="text-white flex items-center space-x-2 px-4">
+				<svg
+					class="w-8 h-8"
+					xmlns="http://www.w3.org/2000/svg"
+					fill="none"
+					viewBox="0 0 24 24"
+					stroke="currentColor"
+				>
+					<path
+						stroke-linecap="round"
+						stroke-linejoin="round"
+						stroke-width="2"
+						d="M12 4v16m8-8H4"></path>
+				</svg>
+				<span class="text-2xl font-extrabold">Dashboard</span>
+			</a>
+
+			<nav>
+				<a
+					href="/administrador"
+					class="block py-2.5 px-4 rounded transition duration-200 hover:bg-blue-800 dark:hover:bg-blue-700"
+					>Inicio</a
+				>
+				<a
+					href="/administrador/mesas"
+					class="block py-2.5 px-4 rounded transition duration-200 hover:bg-blue-800 dark:hover:bg-blue-700"
+					>Mesas</a
+				>
+				<a
+					href="/administrador/platos"
+					class="block py-2.5 px-4 rounded transition duration-200 hover:bg-blue-800 dark:hover:bg-blue-700"
+					>Platos</a
+				>
+				<a
+					href="/administrador/pedidos"
+					class="block py-2.5 px-4 rounded transition duration-200 hover:bg-blue-800 dark:hover:bg-blue-700"
+					>Pedidos</a
+				>
+				<Logout client:load/>
+				
+			</nav>
+			<!-- <slot /> -->
+		</div>
+		<div class="flex flex-col md:flex-row h-screen">
+			<div class="flex-1 p-10 flex flex-col items-center md:items-start">
+				<!-- Sidebar -->
+				<!-- <div
+					class="bg-blue-900 dark:bg-blue-800 text-white w-64 space-y-6 py-7 px-2 hidden md:block"
+				>
+					<a
+						href="#"
+						class="text-white flex items-center space-x-2 px-4"
+					>
+						<svg
+							class="w-8 h-8"
+							xmlns="http://www.w3.org/2000/svg"
+							fill="none"
+							viewBox="0 0 24 24"
+							stroke="currentColor"
+						>
+							<path
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								stroke-width="2"
+								d="M12 4v16m8-8H4"></path>
+						</svg>
+						<span class="text-2xl font-extrabold">Dashboard</span>
+					</a>
+
+					<nav>
+						<a
+							href="#"
+							class="block py-2.5 px-4 rounded transition duration-200 hover:bg-blue-800 dark:hover:bg-blue-700"
+							>Home</a
+						>
+						<a
+							href="#"
+							class="block py-2.5 px-4 rounded transition duration-200 hover:bg-blue-800 dark:hover:bg-blue-700"
+							>Profile</a
+						>
+						<a
+							href="#"
+							class="block py-2.5 px-4 rounded transition duration-200 hover:bg-blue-800 dark:hover:bg-blue-700"
+							>Settings</a
+						>
+						<a
+							href="#"
+							class="block py-2.5 px-4 rounded transition duration-200 hover:bg-blue-800 dark:hover:bg-blue-700"
+							>Logout</a
+						>
+					</nav>
+				</div> -->
+
+				<!-- Main Content -->
+				<slot />
+			</div>
+		</div>
 	</body>
+	<script is:inline>
+		const btn = document.getElementById("menu-btn");
+		const sidebar = document.getElementById("sidebar");
+
+		btn.addEventListener("click", () => {
+			sidebar.classList.toggle("-translate-x-full");
+		});
+	</script>
 </html>
-<style is:global>
-	:root {
-		--accent: 136, 58, 234;
-		--accent-light: 224, 204, 250;
-		--accent-dark: 49, 10, 101;
-		--accent-gradient: linear-gradient(
-			45deg,
-			rgb(var(--accent)),
-			rgb(var(--accent-light)) 30%,
-			white 60%
-		);
-	}
-	html {
-		font-family: system-ui, sans-serif;
-		background: #13151a;
-		background-size: 224px;
-	}
-	code {
-		font-family:
-			Menlo,
-			Monaco,
-			Lucida Console,
-			Liberation Mono,
-			DejaVu Sans Mono,
-			Bitstream Vera Sans Mono,
-			Courier New,
-			monospace;
-	}
-</style>

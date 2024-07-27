@@ -1,0 +1,43 @@
+---
+import { getRole } from "../components/services/authService";
+
+export async function load() {
+	const role = getRole();
+	if (!role) {
+		return {
+			redirect: "/login",
+		};
+	} else if (role === "administrador") {
+		window.location.href = "/administrador";
+	} else if (role === "mesero") {
+		window.location.href = "/mesero";
+	} else if (role === "cocina") {
+		window.location.href = "/cocina";
+	}
+}
+
+interface Props {
+	title: string;
+}
+
+const { title } = Astro.props;
+---
+
+<!doctype html>
+<html lang="es">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="description" content="Astro description" />
+		<meta name="viewport" content="width=device-width" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="generator" content={Astro.generator} />
+		<title>{title}</title>
+	</head>
+	<body class="bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
+		<div class="flex flex-col md:flex-row h-screen">
+			<div class="flex-1 p-10 flex flex-col items-center md:items-start">
+				<slot />
+			</div>
+		</div>
+	</body>
+</html>

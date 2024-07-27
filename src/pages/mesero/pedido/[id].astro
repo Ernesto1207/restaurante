@@ -1,0 +1,9 @@
+---
+import Pedido from "../../../components/svelte/mesero/Pedido.svelte";
+import Login_Layout, { load } from "../../../layouts/Login_Layout.astro";
+
+---
+
+<Login_Layout title="Restaurant">
+    <Pedido params={Astro.params} client:load />
+</Login_Layout>

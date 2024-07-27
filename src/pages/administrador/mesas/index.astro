@@ -1,0 +1,8 @@
+---
+import ListarMesas from "../../../components/svelte/administrador/mesas/ListarMesas.svelte";
+import Layout, { load } from "../../../layouts/Layout.astro";
+---
+
+<Layout title="Restaurant">
+    <ListarMesas client:load />
+</Layout>

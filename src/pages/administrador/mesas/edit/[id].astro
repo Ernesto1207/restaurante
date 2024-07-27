@@ -1,0 +1,11 @@
+---
+import EditMesa from "../../../../components/svelte/administrador/mesas/EditMesa.svelte";
+import Layout, { load } from "../../../../layouts/Layout.astro";
+const { id } = Astro.params;
+
+---
+
+<Layout title="Restaurant">
+    <EditMesa id={id} client:load />
+
+</Layout>

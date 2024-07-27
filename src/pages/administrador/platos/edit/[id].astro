@@ -1,0 +1,11 @@
+---
+import EditPlato from "../../../../components/svelte/administrador/platos/EditPlato.svelte";
+import Layout, { load } from "../../../../layouts/Layout.astro";
+const { id } = Astro.params;
+
+---
+
+<Layout title="Restaurant">
+    <EditPlato id={id} client:load />
+
+</Layout>

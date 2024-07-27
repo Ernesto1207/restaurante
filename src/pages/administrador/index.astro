@@ -1,0 +1,9 @@
+---
+import Layout, { load } from "../../layouts/Layout.astro";
+import Administrador from "../../components/svelte/administrador/Administrador.svelte";
+import ListarPlatos from "../../components/svelte/administrador/platos/ListarPlatos.svelte";
+---
+
+<Layout title="Restaurant">
+    <Administrador client:load />
+</Layout>
